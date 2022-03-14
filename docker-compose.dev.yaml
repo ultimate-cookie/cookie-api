@@ -18,7 +18,7 @@ services:
   socket:
     container_name: socket_api
     ports:
-      - 5001:5001
+      - 7000:7000
     environment:
       - NODE_ENV=development
     command: bash -c "npm install && npm run dev"
