@@ -5,7 +5,7 @@ services:
     ports: 
       - 3000:3000
     environment: 
-      - PGUSER=cookie_quiz
+      - PGUSER=cookie_monster
       - PGHOST=db
       - PGPASSWORD=cookiepass
       - PGDATABASE=cookie_quiz_dev
@@ -21,7 +21,7 @@ services:
       - "dbdata:/var/lib/postgresql/data"
     environment: 
       - POSTGRES_DB=cookie_quiz_dev
-      - POSTGRES_USER=cookie_quiz
+      - POSTGRES_USER=cookie_monster
       - POSTGRES_PASSWORD=cookiepass
 volumes:
   dbdata:
