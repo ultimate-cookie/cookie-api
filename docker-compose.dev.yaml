@@ -35,4 +35,4 @@ volumes:
   dbdata:
 networks: 
   default:
-    name: reinhabit_api
+    name: cookie_api
