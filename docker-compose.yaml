@@ -7,6 +7,14 @@ services:
       - type: bind
         source: ./api
         target: /code
+  
+  socket:
+    image: node:12.18.4
+    working_dir: /code
+    volumes:
+      - type: bind
+        source: ./socketio
+        target: /code  
 
   db:
     image: postgres:12.4
