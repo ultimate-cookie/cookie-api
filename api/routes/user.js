@@ -11,6 +11,3 @@ router.get('/game/:game_id', userController.getUsersByGame)
 
 module.exports = router;
 
-// import user controllers 
-    // specifiy routes based on cotrollers
-        // e.g router.get('/', userController.getAllUsers)
