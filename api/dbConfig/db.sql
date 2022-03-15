@@ -2,4 +2,4 @@
 
 INSERT INTO users (username, points, game_id)
 VALUES
-    ('Dafe', 50 , test)
+    ('Dafe', 50 , 'test')
