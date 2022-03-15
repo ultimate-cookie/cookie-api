@@ -12,7 +12,7 @@ class User {
     return new Promise(async (resolve, reject) => {
       try {
         const usersData = await db.query(`SELECT * FROM users;`);
-        const users = usersData.rows.map((u) => new User(u));
+        const users = usersData.rows.map((user) => new User(user));
         resolve(users);
       } catch (err) {
         reject("Error retrieving Users");
@@ -23,7 +23,6 @@ class User {
   static findById(id) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log("findById: ", id);
         const userData = await db.query("SELECT * FROM users WHERE id = $1;", [
           id,
         ]);
@@ -31,6 +30,21 @@ class User {
         resolve(user);
       } catch (err) {
         reject("Error retrieving Users");
+      }
+    });
+  }
+
+  static findByGame(game_id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const usersData = await db.query(
+          "SELECT * FROM users WHERE lobby_id = $1;",
+          [game_id]
+        );
+        const users = usersData.rows.map((user) => new User(user));
+        resolve(users);
+      } catch (err) {
+        reject("Error retrieving users");
       }
     });
   }
