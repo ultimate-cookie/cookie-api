@@ -12,7 +12,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-    console.log("teh socket is up and running")
+    console.log("the socket is up and running")
 });
 
 // // socket gets disconnected
