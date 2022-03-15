@@ -1,0 +1,38 @@
+version: '3'
+services:
+  api:
+    container_name: cookie_dev_api
+    ports: 
+      - 3000:3000
+    environment: 
+      - PGUSER=cookie_monster
+      - PGHOST=db
+      - PGPASSWORD=cookiepass
+      - PGDATABASE=cookie_quiz_dev
+      - PGPORT=5432
+      - NODE_ENV=development
+    depends_on:
+      - db
+    command: bash -c "npm install && npm run seedDev && npm run dev"
+
+  socket:
+    container_name: socket_api
+    ports:
+      - 7000:7000
+    environment:
+      - NODE_ENV=development
+    command: bash -c "npm install && npm run dev"
+
+  db:
+    container_name: cookie_dev_db
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+    environment: 
+      - POSTGRES_DB=cookie_quiz_dev
+      - POSTGRES_USER=cookie_monster
+      - POSTGRES_PASSWORD=cookiepass
+volumes:
+  dbdata:
+networks: 
+  default:
+    name: cookie_api
