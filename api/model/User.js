@@ -23,7 +23,7 @@ class User {
   static findById(id) {
     return new Promise(async (resolve, reject) => {
       try {
-        const userData = await db.query("SELECT * FROM users WHERE id = $1;", [
+        const userData = await db.query("SELECT * FROM users WHERE user_id = $1;", [
           id,
         ]);
         const user = new User(userData.rows[0]);
@@ -80,5 +80,22 @@ class User {
     });
   }
 
+  static pointsTable(game_id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let Data = await db.query(
+          `SELECT * FROM users WHERE game_id = $1 ORDER BY SCORE DESC;`,
+          [game_id]
+        );
+        const user = Data.rows.map((user) => new User(user));
+        resolve(user);
+      } catch (err) {
+        reject("Error retrieving results");
+      }
+    });
+  }
+
 
 }
+
+module.exports = {User}
