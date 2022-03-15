@@ -1,4 +1,4 @@
 -- inset data into tables
-INSERT INTO users (username, lobby_id)
+INSERT INTO users (username,points game_id)
 VALUES
-    ('Dafe', 1)
+    ('Dafe', 50 , 1)

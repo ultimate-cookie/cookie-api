@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-    id serial PRIMARY KEY,
+    user_id serial PRIMARY KEY,
     username varchar(250) NOT NULL,
-    points int 
+    points INTEGER DEFAULT 0, 
     game_id int NOT NULL
 );
 

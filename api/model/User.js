@@ -2,7 +2,7 @@ const db = require("../db_config/init");
 
 class User {
   constructor(data) {
-    this.id = data.id;
+    this.user_id = data.user_id;
     this.username = data.username;
     this.points = data.points;
     this.game_id = data.game_id;
@@ -49,11 +49,27 @@ class User {
     });
   }
 
+  static updatePoints(user_id, points) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let updateUserPoints = await db.query(
+          "UPDATE users SET points = $1 WHERE user_id = $2 RETURNING *;",
+          [points, user_id]
+        );
+        let updatedUser = new User(updateUserPoints.rows[0]);
+        resolve(updatedUser);
+      } catch (err) {
+        reject("Error updating User");
+      }
+    });
+  }
+
+
   static findByGame(game_id) {
     return new Promise(async (resolve, reject) => {
       try {
         const usersData = await db.query(
-          "SELECT * FROM users WHERE lobby_id = $1;",
+          "SELECT * FROM users WHERE game_id = $1;",
           [game_id]
         );
         const users = usersData.rows.map((user) => new User(user));
