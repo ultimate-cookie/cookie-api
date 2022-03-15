@@ -12,43 +12,46 @@ async function allUsers (req, res) {
 const createUser = async (req , res ) => {
     try {
         const {username, points, game_id} = req.body
-        const user = User.createUser(username, points, game_id)
-        res.status(201).res.json(user)    
+        const user = await User.createUser(username, points, game_id)
+        console.log(user)
+        res.status(201).json(user)    
     } catch (err){
-        res.status(404).res.json(err)
+        res.status(404).send(err)
 
     }
 }
 
-const getUpdatedPoints = async (req , res ) => {
+const updateUserPoints = async (req , res ) => {
     try {
-        const {user_id, points} = req.body
-        const userUpdate = User.updatePoints(user_id,points)
-        res.status(201).res.json(userUpdate)    
+        const {user_id} = req.params
+        const {points} = req.body
+        const userUpdate = await User.updatePoints(user_id,points)
+        res.status(201).json(userUpdate)    
     } catch (err){
-        res.status(500).res.json(err)
+        res.status(500).send(err)
 
     }
 }
 
 const getUsersByGame= async (req , res ) => {
     try {
-        const {game_id} = req.body
-        const users = User.findByGame(game_id)
-        res.status(201).res.json(users)
+        const id = req.params.game_id
+        const users = await User.findByGame(id)
+        res.status(201).json(users)
     } catch (err){
-        res.status(500).res.json(err)
+        res.status(500).send(err)
 
     }
 }
 
 const getPointsTable= async (req , res ) => {
     try {
-        const {game_id} = req.body
-        const users = User.pointsTable(game_id)
-        res.status(201).res.json(users)
+        const game_id = req.params.id
+        console.log(game_id)
+        const users = await User.pointsTable(game_id)
+        res.status(201).json(users)
     } catch (err){
-        res.status(500).res.json(err)
+        res.status(500).send(err)
 
     }
 }
@@ -60,4 +63,4 @@ const getPointsTable= async (req , res ) => {
 
 
 
-module.exports = { allUsers, createUser, getUpdatedPoints, getUsersByGame, getPointsTable}
+module.exports = { allUsers, createUser, updateUserPoints, getUsersByGame, getPointsTable}
