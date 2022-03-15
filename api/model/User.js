@@ -34,6 +34,21 @@ class User {
     });
   }
 
+  static createUser(username, points, game_id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let userData = await db.query(
+          "INSERT INTO users (username, points, game_id) VALUES ($1, $2, $3) RETURNING *;",
+          [username, points, game_id]
+        );
+        let newUser = new User(userData.rows[0]);
+        resolve(newUser);
+      } catch (err) {
+        reject(`Error creating User: ${err}`);
+      }
+    });
+  }
+
   static findByGame(game_id) {
     return new Promise(async (resolve, reject) => {
       try {
