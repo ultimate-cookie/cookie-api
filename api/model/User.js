@@ -19,4 +19,21 @@ class User {
       }
     });
   }
+
+  static findById(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("findById: ", id);
+        const userData = await db.query("SELECT * FROM users WHERE id = $1;", [
+          id,
+        ]);
+        const user = new User(userData.rows[0]);
+        resolve(user);
+      } catch (err) {
+        reject("Error retrieving Users");
+      }
+    });
+  }
+
+
 }
