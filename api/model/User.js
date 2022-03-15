@@ -1,4 +1,5 @@
-const db = require("../db_config/init");
+const db = require("../dbConfig/init");
+const { use } = require("../routes/user");
 
 class User {
   constructor(data) {
@@ -23,7 +24,7 @@ class User {
   static findById(id) {
     return new Promise(async (resolve, reject) => {
       try {
-        const userData = await db.query("SELECT * FROM users WHERE id = $1;", [
+        const userData = await db.query("SELECT * FROM users WHERE user_id = $1;", [
           id,
         ]);
         const user = new User(userData.rows[0]);
@@ -80,5 +81,24 @@ class User {
     });
   }
 
+  static pointsTable(game_id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let tableData = await db.query(
+          `SELECT * FROM users WHERE game_id = $1 ORDER BY POINTS DESC;`,
+          [game_id]
+        );
+        console.log("this is the table data", tableData)
+        const user = tableData.rows.map((user) => new User(user));
+        console.log("this is the user from request", user)
+        resolve(user);
+      } catch (err) {
+        reject("Error retrieving results");
+      }
+    });
+  }
+
 
 }
+
+module.exports = {User}
