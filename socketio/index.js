@@ -25,8 +25,15 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  // create variable to store quiz
+  let quiz = "no quiz";
+
   console.log("New Socket connected: ", socket.id);
   //
+  socket.on("createLobby", ({ category, difficulty, amount, type }) => {
+    console.log(category, difficulty, amount, type);
+    quiz = "api call";
+  });
   socket.on("joinLobby", ({ username, room }) => {
     console.log(username, room);
 
@@ -48,6 +55,12 @@ io.on("connection", (socket) => {
       users: getRoomUsers(user.room),
     });
     */
+  });
+
+  socket.on("startQuiz", (str) => {
+    console.log(str);
+    // return the entire quiz from the quiz api
+    socket.emit("quizQuestions", quiz);
   });
 
   // Listen for Questions
