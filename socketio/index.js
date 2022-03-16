@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
   //
   socket.on("joinLobby", ({ username, room }) => {
     console.log(username, room);
+    /*
     const user = userJoin(socket.id, username, room);
     socket.join();
 
@@ -45,6 +46,7 @@ io.on("connection", (socket) => {
       room: user.room,
       users: getRoomUsers(user.room),
     });
+    */
   });
 
   // Listen for Questions
