@@ -28,6 +28,7 @@ io.on("connection", (socket) => {
   console.log("New Socket connected: ", socket.id);
   //
   socket.on("joinLobby", ({ username, room }) => {
+    console.log(username, room);
     const user = userJoin(socket.id, username, room);
     socket.join();
 
