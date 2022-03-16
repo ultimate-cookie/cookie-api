@@ -1,5 +1,4 @@
 const db = require("../dbConfig/init");
-const { use } = require("../routes/user");
 
 class User {
   constructor(data) {
@@ -14,6 +13,7 @@ class User {
       try {
         const usersData = await db.query(`SELECT * FROM users;`);
         const users = usersData.rows.map((user) => new User(user));
+        console.log(users)
         resolve(users);
       } catch (err) {
         reject("Error retrieving Users");
