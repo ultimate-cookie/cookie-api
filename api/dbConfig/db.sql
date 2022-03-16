@@ -2,4 +2,7 @@
 
 INSERT INTO users (username, points, game_id)
 VALUES
-    ('Dafe', 50 , 'test')
+    ('saka', 50 , 'test'),
+    ('Auba', 5 , 'test'),
+    ('salah', 8, 'liverpool'),
+    ('laca', 57 , 'test');
