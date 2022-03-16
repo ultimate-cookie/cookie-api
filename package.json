@@ -1,0 +1,18 @@
+{
+  "name": "cookie-api",
+  "description": "Deploying server and database with Heroku",
+  "scripts": {
+    "start": "node ./api/dbConfig/seedDev.js && node ./api/index.js"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ultimate-cookie/cookie-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ultimate-cookie/cookie-api/issues"
+  },
+  "homepage": "https://github.com/ultimate-cookie/cookie-api#readme"
+}
