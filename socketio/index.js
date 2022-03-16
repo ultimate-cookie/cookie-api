@@ -29,14 +29,15 @@ io.on("connection", (socket) => {
   //
   socket.on("joinLobby", ({ username, room }) => {
     console.log(username, room);
+
+    // return all users
+    socket.emit("playerList", "Welcome to Ultimate Cookie");
+
     /*
     const user = userJoin(socket.id, username, room);
     socket.join();
 
-    // Welcome current user
-    socket.emit("message", "Welcome to Ultimate Cookie");
-
-    // Broadcast when user connects
+     // Broadcast when user connects
     socket.broadcast
       .to(user.room)
       .emit("message", `${user.username} has joined the room`);
