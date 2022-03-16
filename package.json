@@ -2,7 +2,7 @@
   "name": "cookie-api",
   "description": "Deploying server and database with Heroku",
   "scripts": {
-    "start": "node ./api/index.js"
+    "start": "node ./api/index.js && node ./api/dbConfig/seedDev.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

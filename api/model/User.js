@@ -13,7 +13,9 @@ class User {
     return new Promise(async (resolve, reject) => {
       try {
         const usersData = await db.query(`SELECT * FROM users;`);
+        console.log(usersData)
         const users = usersData.rows.map((user) => new User(user));
+        console.log(users)
         resolve(users);
       } catch (err) {
         reject("Error retrieving Users");
