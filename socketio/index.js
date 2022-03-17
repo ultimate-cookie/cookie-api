@@ -12,7 +12,7 @@ const port = process.env.PORT || 7000;
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:8080", "https://ultimate-cookieee.netlify.app/" ],
+    origin: ["http://localhost:8080", "https://ultimate-cookieee.netlify.app/"],
     methods: ["GET", "POST"],
   },
 });
@@ -46,6 +46,7 @@ const getQuestions = async (numQuestions, categoryId, difficulty) => {
 };
 
 let quiz = {};
+let players = [];
 io.on("connection", (socket) => {
   // create variable to store quiz
   let userInfo = { username: "", room: "" };
@@ -59,6 +60,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("joinLobby", ({ username, room }) => {
+    players.push(username);
     userInfo.username = username;
     userInfo.room = room;
     console.log(username, room);
@@ -66,6 +68,8 @@ io.on("connection", (socket) => {
     console.log("this is the user that joined the room", user);
     // return all users
     socket.emit("playerList", "Welcome to Ultimate Cookie");
+    socket.emit("lobbyPlayers", players);
+    socket.broadcast.emit("lobbyPlayers", players);
 
     /*
     const user = userJoin(socket.id, username, room);
