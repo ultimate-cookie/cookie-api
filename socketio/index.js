@@ -1,8 +1,10 @@
+
 const express = require("express");
 const app = express();
 
+const axios = require("axios");
+
 const {
-  userJoin,
   getCurrentUser,
   userLeave,
   getRoomUsers,
@@ -24,19 +26,50 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello world</h1>");
 });
 
+
+//  change to db
+const users = [];
+
+// join user to chat
+
+const  userJoin = (id, username, room) => {
+  const user = { id, username, room };
+  users.push(user);
+  return user;
+}
+
+
+const getQuestions = async (numQuestions, categoryId, difficulty) => {
+  const difficultyLvl = difficulty.toLowerCase();
+  try {
+    const response = await axios.get(
+      `https://opentdb.com/api.php?amount=${numQuestions}&category=${categoryId}&difficulty=${difficultyLvl}&type=multiple`
+    );
+    const data = response.data.results;
+    return data;
+  } catch (error) {
+    console.error(`(fetch) Error getting questions: ${error}`);
+  }
+}
+
+
 io.on("connection", (socket) => {
   // create variable to store quiz
   let quiz = "no quiz";
 
   console.log("New Socket connected: ", socket.id);
   //
-  socket.on("createLobby", ({ category, difficulty, amount, type }) => {
+  socket.on("createLobby", async ({ category, difficulty, amount, type }) => {
     console.log(category, difficulty, amount, type);
-    quiz = "api call";
+    const questions = await getQuestions(amount, category, difficulty)
+   
+    quiz = questions;
   });
+
   socket.on("joinLobby", ({ username, room }) => {
     console.log(username, room);
-
+    const user = userJoin(socket.id, username, room);
+    console.log("this is the user that joined the room",  user )
     // return all users
     socket.emit("playerList", "Welcome to Ultimate Cookie");
 
