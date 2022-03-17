@@ -3,7 +3,7 @@ const app = express();
 
 const axios = require("axios");
 
-const { getCurrentUser, userLeave, getRoomUsers } = require("./helpers/users");
+const { userLeave, getRoomUsers } = require("./helpers/users");
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -45,22 +45,29 @@ const getQuestions = async (numQuestions, categoryId, difficulty) => {
   }
 };
 
+// getCurrentUser
+const getCurrentUser = (id) => {
+  return users.find((user) => user.id === id);
+};
+
 let quiz = {};
-let players = [];
+let players = {};
 io.on("connection", (socket) => {
   // create variable to store quiz
   let userInfo = { username: "", room: "" };
   console.log("New Socket connected: ", socket.id);
-  //
-  socket.on("createLobby", async ({ category, difficulty, amount, type }) => {
-    console.log(category, difficulty, amount, type);
+
+  socket.on("createLobby", async ({ category, difficulty, amount, room }) => {
     const questions = await getQuestions(amount, category, difficulty);
 
-    quiz = questions;
+    quiz[room] = questions;
   });
 
   socket.on("joinLobby", ({ username, room }) => {
-    players.push(username);
+    if (players[room] === undefined) {
+      players[room] = [];
+    }
+    players[room].push(username);
     userInfo.username = username;
     userInfo.room = room;
     console.log(username, room);
@@ -68,36 +75,19 @@ io.on("connection", (socket) => {
     console.log("this is the user that joined the room", user);
     // return all users
     socket.emit("playerList", "Welcome to Ultimate Cookie");
-    socket.emit("lobbyPlayers", players);
-    socket.broadcast.emit("lobbyPlayers", players);
 
-    /*
-    const user = userJoin(socket.id, username, room);
-    socket.join();
+    socket.join(user.room);
 
-     // Broadcast when user connects
-    socket.broadcast
-      .to(user.room)
-      .emit("message", `${user.username} has joined the room`);
+    socket.emit("lobbyPlayers", players[room]);
+    socket.broadcast.to(user.room).emit("lobbyPlayers", players[room]);
 
-    // Send user and room info
-    io.to(user.room).emit("roomUsers", {
-      room: user.room,
-      users: getRoomUsers(user.room),
+    socket.on("startQuiz", (str) => {
+      console.log(str);
+      socket.emit("quizQuestions", quiz[room]);
+      console.log("this i sthe quiz room");
+      socket.broadcast.to(user.room).emit("quizQuestions", quiz[room]);
     });
-    */
   });
-
-  socket.on("startQuiz", (str) => {
-    console.log(str);
-    // return the entire quiz from the quiz api
-    socket.emit("quizQuestions", quiz);
-    socket.broadcast.emit("quizQuestions", quiz);
-  });
-
-  // Listen for Questions
-
-  // Listen for Score
 
   // // socket gets disconnected
   socket.on("disconnect", () => {
