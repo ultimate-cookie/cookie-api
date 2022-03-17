@@ -88,6 +88,7 @@ io.on("connection", (socket) => {
     console.log(str);
     // return the entire quiz from the quiz api
     socket.emit("quizQuestions", quiz);
+    socket.broadcast.emit("quizQuestions", quiz);
   });
 
   // Listen for Questions
