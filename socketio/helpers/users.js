@@ -1,3 +1,4 @@
+const axios = require("axios");
 //  change to db
 const users = [];
 
@@ -30,4 +31,6 @@ function getRoomUsers(room) {
   return users.filter((user) => user.room === room);
 }
 
-module.export = { userJoin, getCurrentUser, userLeave, getRoomUsers };
+
+
+module.export = { userJoin, getCurrentUser, userLeave, getRoomUsers};
