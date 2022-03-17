@@ -1,14 +1,9 @@
-
 const express = require("express");
 const app = express();
 
 const axios = require("axios");
 
-const {
-  getCurrentUser,
-  userLeave,
-  getRoomUsers,
-} = require("./helpers/users");
+const { getCurrentUser, userLeave, getRoomUsers } = require("./helpers/users");
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -26,18 +21,16 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello world</h1>");
 });
 
-
 //  change to db
 const users = [];
 
 // join user to chat
 
-const  userJoin = (id, username, room) => {
+const userJoin = (id, username, room) => {
   const user = { id, username, room };
   users.push(user);
   return user;
-}
-
+};
 
 const getQuestions = async (numQuestions, categoryId, difficulty) => {
   const difficultyLvl = difficulty.toLowerCase();
@@ -50,26 +43,27 @@ const getQuestions = async (numQuestions, categoryId, difficulty) => {
   } catch (error) {
     console.error(`(fetch) Error getting questions: ${error}`);
   }
-}
+};
 
-
+let quiz = {};
 io.on("connection", (socket) => {
   // create variable to store quiz
-  let quiz = "no quiz";
-
+  let userInfo = { username: "", room: "" };
   console.log("New Socket connected: ", socket.id);
   //
   socket.on("createLobby", async ({ category, difficulty, amount, type }) => {
     console.log(category, difficulty, amount, type);
-    const questions = await getQuestions(amount, category, difficulty)
-   
+    const questions = await getQuestions(amount, category, difficulty);
+
     quiz = questions;
   });
 
   socket.on("joinLobby", ({ username, room }) => {
+    userInfo.username = username;
+    userInfo.room = room;
     console.log(username, room);
     const user = userJoin(socket.id, username, room);
-    console.log("this is the user that joined the room",  user )
+    console.log("this is the user that joined the room", user);
     // return all users
     socket.emit("playerList", "Welcome to Ultimate Cookie");
 
