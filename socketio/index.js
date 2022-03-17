@@ -12,7 +12,7 @@ const port = process.env.PORT || 7000;
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:8080"],
+    origin: ["http://localhost:8080", "https://ultimate-cookieee.netlify.app/" ],
     methods: ["GET", "POST"],
   },
 });
