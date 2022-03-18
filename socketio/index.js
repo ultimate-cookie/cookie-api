@@ -1,14 +1,9 @@
-
 const express = require("express");
 const app = express();
 
 const axios = require("axios");
 
-const {
-  getCurrentUser,
-  userLeave,
-  getRoomUsers,
-} = require("./helpers/users");
+const { userLeave, getRoomUsers } = require("./helpers/users");
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -17,7 +12,7 @@ const port = process.env.PORT || 7000;
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:8080"],
+    origin: ["http://localhost:8080", "https://ultimate-cookieee.netlify.app/"],
     methods: ["GET", "POST"],
   },
 });
@@ -26,18 +21,16 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello world</h1>");
 });
 
-
 //  change to db
 const users = [];
 
 // join user to chat
 
-const  userJoin = (id, username, room) => {
+const userJoin = (id, username, room) => {
   const user = { id, username, room };
   users.push(user);
   return user;
-}
-
+};
 
 const getQuestions = async (numQuestions, categoryId, difficulty) => {
   const difficultyLvl = difficulty.toLowerCase();
@@ -50,55 +43,51 @@ const getQuestions = async (numQuestions, categoryId, difficulty) => {
   } catch (error) {
     console.error(`(fetch) Error getting questions: ${error}`);
   }
-}
+};
 
+// getCurrentUser
+const getCurrentUser = (id) => {
+  return users.find((user) => user.id === id);
+};
 
+let quiz = {};
+let players = {};
 io.on("connection", (socket) => {
   // create variable to store quiz
-  let quiz = "no quiz";
-
+  let userInfo = { username: "", room: "" };
   console.log("New Socket connected: ", socket.id);
-  //
-  socket.on("createLobby", async ({ category, difficulty, amount, type }) => {
-    console.log(category, difficulty, amount, type);
-    const questions = await getQuestions(amount, category, difficulty)
-   
-    quiz = questions;
+
+  socket.on("createLobby", async ({ category, difficulty, amount, room }) => {
+    const questions = await getQuestions(amount, category, difficulty);
+
+    quiz[room] = questions;
   });
 
   socket.on("joinLobby", ({ username, room }) => {
+    if (players[room] === undefined) {
+      players[room] = [];
+    }
+    players[room].push(username);
+    userInfo.username = username;
+    userInfo.room = room;
     console.log(username, room);
     const user = userJoin(socket.id, username, room);
-    console.log("this is the user that joined the room",  user )
+    console.log("this is the user that joined the room", user);
     // return all users
     socket.emit("playerList", "Welcome to Ultimate Cookie");
 
-    /*
-    const user = userJoin(socket.id, username, room);
-    socket.join();
+    socket.join(user.room);
 
-     // Broadcast when user connects
-    socket.broadcast
-      .to(user.room)
-      .emit("message", `${user.username} has joined the room`);
+    socket.emit("lobbyPlayers", players[room]);
+    socket.broadcast.to(user.room).emit("lobbyPlayers", players[room]);
 
-    // Send user and room info
-    io.to(user.room).emit("roomUsers", {
-      room: user.room,
-      users: getRoomUsers(user.room),
+    socket.on("startQuiz", (str) => {
+      console.log(str);
+      socket.emit("quizQuestions", quiz[room]);
+      console.log("this i sthe quiz room");
+      socket.broadcast.to(user.room).emit("quizQuestions", quiz[room]);
     });
-    */
   });
-
-  socket.on("startQuiz", (str) => {
-    console.log(str);
-    // return the entire quiz from the quiz api
-    socket.emit("quizQuestions", quiz);
-  });
-
-  // Listen for Questions
-
-  // Listen for Score
 
   // // socket gets disconnected
   socket.on("disconnect", () => {
